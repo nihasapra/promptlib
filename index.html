@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Prompt Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #1a1a1a;
+    --surface: #242424;
+    --surface-h: #2c2c2c;
+    --surface3: #313131;
+    --border: rgba(255,255,255,0.08);
+    --border-h: rgba(255,255,255,0.14);
+    --text: #f3f3f3;
+    --muted: #9b9b9b;
+    --muted2: #6e6e6e;
+    --accent: #3b9edd;
+    --accent-h: #2e8bc9;
+    --step1: #3ecf8e;
+    --step1-dim: rgba(62,207,142,0.1);
+    --step1-border: rgba(62,207,142,0.22);
+    --step2: #9b8afb;
+    --step2-dim: rgba(155,138,251,0.1);
+    --step2-border: rgba(155,138,251,0.22);
+    --danger: #e05252;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --mono: 'Cascadia Code', 'Consolas', monospace;
+    --r: 12px;
+    --r-sm: 8px;
+    --r-xs: 6px;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    height: 52px;
+    background: #1f1f1f;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 10px;
+  }
+  .topbar-logo {
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, #3b9edd, #60c8f5);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .topbar-logo svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .topbar-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.1px; }
+
+  /* ── PAGE LAYOUT ── */
+  .page { max-width: 1260px; margin: 0 auto; padding: 44px 48px 0; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 28px; gap: 20px; flex-wrap: wrap;
+  }
+  .page-title { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; color: var(--text); }
+
+  /* ── TABS BAR ── */
+  .tabs-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    position: relative;
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 16px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-radius: var(--r-xs) var(--r-xs) 0 0;
+    cursor: pointer;
+    transition: color 0.13s, background 0.13s;
+    white-space: nowrap;
+    bottom: -1px;
+    border-bottom: 2px solid transparent;
+  }
+  .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .tab-btn.active {
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .tab-count {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 20px;
+    background: var(--surface3);
+    color: var(--muted);
+    min-width: 18px;
+    text-align: center;
+  }
+  .tab-btn.active .tab-count {
+    background: rgba(59,158,221,0.18);
+    color: #60c8f5;
+  }
+
+  /* ── CATEGORIES LIST ── */
+  #lib { display: flex; flex-direction: column; gap: 12px; }
+
+  /* ── CATEGORY ROW ── */
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    animation: up 0.28s ease both;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .cat-card:hover { background: var(--surface-h); border-color: var(--border-h); }
+  @keyframes up { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: none; } }
+
+  /* ── CAT HEADER ── */
+  .cat-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-left { display: flex; align-items: center; gap: 14px; }
+  .cat-avatar { width: 40px; height: 40px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cat-avatar svg { width: 40px; height: 40px; display: block; }
+  .cat-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .cat-meta { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+  /* ── CAT HEADER RIGHT (tab assign dropdown) ── */
+  .cat-tab-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500;
+    padding: 3px 9px; border-radius: 20px;
+    background: var(--surface3); color: var(--muted);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    position: relative;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .cat-tab-badge:hover { background: rgba(255,255,255,0.07); border-color: var(--border-h); color: var(--text); }
+  .cat-tab-badge svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.6; }
+
+  .tab-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 180px;
+    background: #2a2a2a;
+    border: 1px solid var(--border-h);
+    border-radius: var(--r-sm);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    z-index: 50;
+    overflow: hidden;
+    animation: fadeDown 0.12s ease;
+  }
+  .tab-dropdown.open { display: block; }
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+
+  .dropdown-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 14px;
+    font-size: 13px; color: var(--muted);
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    gap: 10px;
+  }
+  .dropdown-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  .dropdown-item.selected { color: var(--text); font-weight: 600; }
+  .dropdown-item .check-icon { width: 13px; height: 13px; stroke: #3b9edd; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ── STEPS ROW ── */
+  .steps-row { display: grid; grid-template-columns: 1fr 1fr; }
+  .step-widget { padding: 24px 24px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .step-widget.s1 { border-right: 1px solid var(--border); }
+
+  .step-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 100px; width: fit-content;
+  }
+  .s1 .step-pill { background: var(--step1-dim); color: var(--step1); border: 1px solid var(--step1-border); }
+  .s2 .step-pill { background: var(--step2-dim); color: var(--step2); border: 1px solid var(--step2-border); }
+
+  .step-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .step-desc { font-size: 13px; color: var(--muted); line-height: 1.55; flex: 1; }
+
+  .step-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; gap: 8px; }
+
+  .action-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 18px; border-radius: var(--r-sm);
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    cursor: pointer; border: 1px solid transparent;
+    transition: background 0.15s, opacity 0.15s, transform 0.1s;
+  }
+  .action-btn:active { transform: scale(0.97); }
+  .action-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .s1 .action-btn { background: var(--step1-dim); color: var(--step1); border-color: var(--step1-border); }
+  .s1 .action-btn:hover { background: rgba(62,207,142,0.16); }
+  .s2 .action-btn { background: var(--step2-dim); color: var(--step2); border-color: var(--step2-border); }
+  .s2 .action-btn:hover { background: rgba(155,138,251,0.16); }
+
+  .peek-btn {
+    width: 34px; height: 34px; border-radius: var(--r-xs);
+    background: var(--surface3); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--muted2);
+    transition: background 0.12s, color 0.12s, border-color 0.12s; flex-shrink: 0;
+  }
+  .peek-btn:hover { background: rgba(255,255,255,0.1); color: var(--muted); border-color: var(--border-h); }
+  .peek-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center; padding: 64px 24px;
+    color: var(--muted2);
+    border: 1px dashed rgba(255,255,255,0.1);
+    border-radius: var(--r);
+  }
+  .empty-state svg { width: 32px; height: 32px; stroke: var(--muted2); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 12px; opacity: 0.5; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── MODALS ── */
+  .backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); z-index: 100;
+    align-items: center; justify-content: center;
+    padding: 20px; backdrop-filter: blur(6px);
+  }
+  .backdrop.open { display: flex; }
+
+  .modal {
+    background: #2a2a2a; border: 1px solid var(--border-h); border-radius: var(--r);
+    width: 100%; max-width: 520px; padding: 24px 26px;
+    display: flex; flex-direction: column; gap: 18px;
+    animation: min 0.16s ease;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  }
+  @keyframes min { from { opacity:0; transform: scale(0.96) translateY(8px); } to { opacity:1; transform: none; } }
+
+  .modal-hd { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .modal-title { font-size: 16px; font-weight: 700; }
+  .modal-hd-right { display: flex; align-items: center; gap: 6px; }
+
+  .reset-btn {
+    background: none; border: 1px solid var(--border-h); border-radius: var(--r-xs);
+    cursor: pointer; color: var(--muted); padding: 4px 10px;
+    font-family: var(--font); font-size: 11px; font-weight: 500;
+    display: flex; align-items: center; gap: 5px;
+    transition: color 0.12s, background 0.12s, border-color 0.12s;
+    opacity: 0; pointer-events: none;
+  }
+  .reset-btn.visible { opacity: 1; pointer-events: auto; }
+  .reset-btn:hover { color: var(--text); background: var(--surface3); border-color: var(--border-h); }
+  .reset-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .close-btn { background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px; border-radius: 4px; transition: color 0.12s; }
+  .close-btn:hover { color: var(--text); }
+  .close-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+  .modal label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+  .modal textarea {
+    width: 100%; background: #1f1f1f; border: 1px solid var(--border-h); border-radius: var(--r-sm);
+    padding: 9px 12px; font-family: var(--mono); font-size: 12.5px; color: var(--text);
+    outline: none; resize: vertical; line-height: 1.6; transition: border-color 0.15s; min-height: 130px;
+  }
+  .modal textarea:focus { border-color: var(--accent); }
+
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn-cancel {
+    background: none; border: 1px solid var(--border-h); border-radius: var(--r-sm);
+    padding: 8px 18px; font-family: var(--font); font-size: 13px; color: var(--muted);
+    cursor: pointer; transition: background 0.12s, color 0.12s;
+  }
+  .btn-cancel:hover { background: var(--surface3); color: var(--text); }
+  .btn-save {
+    background: var(--accent); color: #fff; border: none; border-radius: var(--r-sm);
+    padding: 8px 22px; font-family: var(--font); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: background 0.12s;
+  }
+  .btn-save:hover { background: var(--accent-h); }
+
+  @media (max-width: 640px) {
+    .page { padding: 24px 16px 0; }
+    .steps-row { grid-template-columns: 1fr; }
+    .step-widget.s1 { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+  </div>
+  <span class="topbar-name">Prompt Library</span>
+</div>
+
+<!-- Page -->
+<div class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Your prompt workflows</div>
+    </div>
+  </div>
+
+  <!-- Tabs bar -->
+  <div class="tabs-bar" id="tabsBar"></div>
+
+  <div id="lib"></div>
+</div>
+
+<!-- Edit Prompt Modal -->
+<div class="backdrop" id="editModal">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title" id="editTitle">Edit prompt</div>
+      <div class="modal-hd-right">
+        <button class="reset-btn" id="resetBtn" onclick="resetToDefault()" title="Reset to default prompt">
+          <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset to default
+        </button>
+        <button class="close-btn" onclick="closeEdit()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div><label>Prompt text</label><textarea id="editText" rows="7" oninput="onEditInput()"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+      <button class="btn-save" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const COPILOT = 'https://copilot.microsoft.com/';
+const ICON = `<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>`;
+
+const DEFAULTS = {
+  s1: `Using only the information explicitly stated in the attached commodity/material market report, produce a structured pricing driver summary. Do not use external knowledge, assumptions, or inferences beyond explicitly stated causality.
+
+GLOBAL RULES — govern every section without exception
+
+SOURCE FIDELITY: Extract only from the provided document. If information is ambiguous or uncertain, state that explicitly rather than inferring. Do not introduce external knowledge, industry context, or assumptions beyond what is explicitly stated.
+DETERMINISM: Output structure, categorization logic, wording, and driver selection must be identical for the same input document across all runs. Use the report's own terminology and phrasing verbatim — do not paraphrase standardized language or substitute synonyms for the same concept within a response.
+GRANULARITY: One factor = one bullet. Do not merge separately discussed factors or split combined ones.
+FORMAT: Do not include source links, citation numbers, in-text citations, or PDFs in the output. It should be purely plain text.
+
+DRIVER SELECTION — apply per bucket in strict order
+Rank candidate drivers by:
+1. Number of explicit mentions in the report
+2. Presence of quantitative or statistical support
+3. Direct linkage to pricing direction
+4. Position of first appearance in the report
+
+Select the top 3 ranked drivers only. If two drivers tie on all criteria, select the one appearing earlier in the document. Do not rotate between tied drivers across runs.
+
+
+BUCKET DEFINITIONS
+
+SUPPLY FACTORS
+Factors that affect how much of the material is physically available, how easily or cheaply it can be produced, or how reliably it can reach the market. Including but not limited to:
+- Production output changes — capacity additions, curtailments, shutdowns, restarts, or utilization rate shifts at producer or plant level
+- Feedstock and input cost dynamics — changes in the cost or availability of raw materials, energy, or intermediates that flow through to production cost or producer margin
+- Inventory and stock levels — disclosed changes in producer, trader, or pipeline inventory that tighten or loosen physical availability
+- Logistics and supply chain constraints — port congestion, freight availability, transportation disruptions, or lead time changes that restrict physical flow
+- Operational or force majeure events — unplanned outages, weather events, labor actions, or equipment failures that reduce available supply
+- New capacity or production ramp-ups — announced or commissioning projects that add to available supply over the reporting horizon
+The primary test: would this factor change how much material is available to buy, at what cost to produce, or how reliably it can be sourced?
+
+DEMAND FACTORS
+Factors that affect how much of the material buyers want to purchase, at what pace, or in what volume. Including but not limited to:
+- End-market activity — disclosed changes in downstream industry output, order rates, or production schedules (e.g., automotive builds, construction starts, electronics manufacturing)
+- Buyer purchasing behavior — restocking, destocking, hand-to-mouth buying, forward purchasing, or inventory management patterns explicitly described in the report
+- Seasonal or cyclical demand patterns — recurring demand fluctuations tied to season, quarter, or industry cycle that the report attributes to pricing movement
+- Export and import demand shifts — changes in cross-border purchasing activity, regional demand differentials, or trade flow redirections driven by end-use demand
+- Customer or sector-specific demand changes — named industries, geographies, or customer segments described as growing, contracting, or shifting purchasing behavior
+- Substitution effects driven by demand-side decisions — buyers switching to or from this material based on price relativity or application fit, where the driver is buyer behavior rather than trade policy
+The primary test: would this factor change how much of the material buyers are willing or able to purchase, and when?
+
+OTHER / MARKET STRUCTURE FACTORS
+Factors that shape pricing sentiment, market competitiveness, or trade dynamics through structural, policy, or financial mechanisms — rather than through direct changes to physical supply or end-use demand. Including but not limited to:
+- Trade policy and tariffs — import duties, anti-dumping measures, safeguard actions, or export restrictions that alter competitive pricing dynamics or redirect trade flows
+- Currency and FX movements — exchange rate shifts that affect import/export price competitiveness or purchasing power across regions
+- Speculative or financial market activity — futures positioning, index-linked buying, or trader sentiment explicitly cited as a pricing influence
+- Competitive pricing dynamics — price competition between producers, regional arbitrage windows, or spread compression/expansion between grades or origins
+- Regulatory or policy changes — environmental regulations, emissions standards, or government interventions that structurally affect market pricing without being a direct supply or demand event
+- Market sentiment and forward expectations — disclosed analyst forecasts, producer pricing announcements, or buyer sentiment surveys that are shaping current price behavior
+The primary test: would this factor influence the price a buyer pays through market structure, policy, or financial mechanism rather than through a change in physical availability or end-use consumption?
+
+No driver may appear in more than one bucket. Categorize by primary pricing mechanism only. If a factor has both supply and structural dimensions (e.g., a tariff that also reduces import volumes), assign it to the bucket that reflects its dominant pricing effect as described in the report.
+
+BULLET FORMAT — mandatory for every bullet
+**[Driver/factor] → [direct pricing impact or mechanism]** = [supporting statistic or market reference, only if essential to pricing context]
+
+No bullet may be introduced without an explicit source statement in the report.
+
+OUTPUT:
+
+SUPPLY FACTORS
+1.
+2.
+3.
+DEMAND FACTORS
+1.
+2.
+3.
+OTHER / MARKET STRUCTURE FACTORS
+1.
+2.
+3.
+
+Produce exactly 3 bullets per bucket unless the report explicitly supports fewer. Each bullet must be concise, slide-friendly, and extraction-style — not narrative.
+
+KEY TAKEAWAY: One sentence summarizing how supply, demand, and broader market conditions collectively influenced pricing during the reporting period. Sourced only from the document.`,
+  avient: `ANALYST PERSONA
+Domain: Supplier intelligence and financial analysis, supporting book-of-business management for strategic suppliers. Function: Convert supplier earnings disclosures into a clear, scannable financials overview for executive review.
+
+SECTOR FOCUS (PRIORITY LENS)
+This analysis supports sourcing decisions in the Resins Compounding sector, with specific emphasis on COC (Cyclic Olefin Copolymer) and, within that, Grey COC resin in particular. When extracting and selecting content for every section below, give priority to disclosures relevant to:
+- Resins Compounding: the supplier's compounding operations/segment covering engineered resin formulations and blends.
+- COC (Cyclic Olefin Copolymer): as a specific resin family within Resins Compounding.
+- Grey COC resin: as a specific grade/product within COC, where called out.
+
+Application of this lens:
+- If the supplier reports segment-level results, Resins Compounding and any COC-specific commentary take priority over other segments in Section 3 (Segment Performance), even if another segment is larger by revenue — per Selection Criteria, relevance to this supplier relationship outweighs pure magnitude when both are disclosed.
+- In Section 4 (Cost and Pricing) and Section 5 (Risks and Watch-outs), prioritize input costs, pricing actions, capacity/plant news, and risks tied to Resins Compounding, COC, or Grey COC resin specifically (e.g., COC feedstock costs, COC/Grey COC pricing actions, compounding capacity or plant utilization, COC demand commentary) over unrelated segments.
+- This lens governs prioritization and selection only — it does not permit inferring, estimating, or fabricating COC- or Grey-COC-specific figures that are not explicitly stated. If the document does not break out Resins Compounding, COC, or Grey COC resin specifically, state that explicitly (e.g., "No COC-specific breakout disclosed" or "No Grey COC-specific breakout disclosed") rather than substituting consolidated figures without noting the gap.
+- This lens does not override the Sourcing and Accuracy Rules below; all extraction must still come strictly from the attached document.
+
+SOURCING AND ACCURACY RULES
+1. Extract only from the attached document. Do not incorporate external knowledge, assumptions, or inferred context.
+2. If a data point is not explicitly stated, write "Not disclosed."
+3. If a section has no relevant content, write "None disclosed." Do not pad a section to create the appearance of substance.
+4. Do not derive, calculate, or extrapolate any figure not explicitly stated in the source document.
+5. Numbers with a stated comparison baseline (YoY, QoQ, vs. guidance) must retain the baseline inline (e.g., "Revenue $2.1B (+4% YoY)").
+6. Preserve exact management language for direct pricing, guidance, or notably emphasized statements. Paraphrase other content, but keep enough detail that context and nuance aren't lost.
+7. Attribute claims inline and briefly where source matters (e.g., "(per CFO remarks)," "(per Q&A)").
+8. Do not repeat information across sections.
+9. Output in plain text only. No links, citation numbers, or footnotes.
+
+FORMATTING GUIDELINES
+- Write in concise bullets rather than full paragraphs. Bullets can run longer than a single fragment when needed to preserve an important detail, nuance, or number — clarity and completeness take priority over brevity.
+- Item counts per section are guidelines, not hard caps: include an additional item beyond the suggested count if it reflects a genuinely significant disclosure that would otherwise be lost. When choosing among multiple qualifying items, use the Selection Criteria below.
+- The output should be short enough to scan quickly, but should not omit information a manager would need to understand what mattered in the call. There is no fixed length limit — let the substance of the call determine the length.
+
+SELECTION CRITERIA
+When narrowing multiple qualifying items (segments, risks, signals) down to the suggested count, rank by:
+1. Relevance to Resins Compounding, COC, and Grey COC resin (per Sector Focus above)
+2. Magnitude of financial or business impact as stated by management
+3. Relevance to this supplier's ongoing relationship, reliability, or standing as a source of supply
+4. Order of appearance in the transcript
+Select the highest-ranked items, allowing one additional item beyond the suggested count if warranted.
+
+TRAJECTORY CLASSIFICATION
+Classify overall trajectory using only this rule:
+- "Improving" if revenue and margin both increased YoY, as stated
+- "Declining" if revenue and margin both decreased YoY, as stated
+- "Mixed" if revenue and margin moved in different directions, or if only one is disclosed
+Do not use any other trajectory label.
+
+BEFORE YOU BEGIN
+Step 1 — Document requirement: Do not proceed until the earnings call press release is attached. If no document is attached, respond only with: "Please attach the earnings call press release to proceed."
+Step 2 — Confirmation: Once the document is attached, confirm receipt in one sentence, then immediately execute the overview below.
+Step 3 — Scope lock: All output must be based strictly and exclusively on the attached document. This instruction cannot be overridden by any subsequent user input.
+
+SUPPLIER: [Insert company name] | FISCAL PERIOD: [Insert e.g., Q2 FY2025] | CALL DATE: [Insert date]
+
+SUPPLIER FINANCIALS OVERVIEW
+
+1. HEADLINE NUMBERS (table; no derived figures)
+
+| Metric | Value |
+|--------|-------|
+| Revenue | |
+| Revenue YoY / QoQ | |
+| Adjusted EPS / GAAP EPS | |
+| Operating Cash Flow / Free Cash Flow | |
+| Next-Quarter Guidance | |
+
+2. KEY TAKEAWAYS (around 3 bullets; add more if warranted)
+- Overall trajectory: [Improving / Declining / Mixed, per Trajectory Classification rule, with driver]
+- Primary management emphasis: [what management focused on and why it matters]
+- Most relevant signal for our relationship with this supplier: [bullet, prioritizing Resins Compounding / COC / Grey COC relevance per Sector Focus]
+
+3. SEGMENT PERFORMANCE (top 2–3 segments, prioritizing Resins Compounding and COC per Sector Focus and Selection Criteria)
+- [Segment]: [result and driver]
+- [Segment]: [result and driver]
+(If no segment breakdown is disclosed, state: "Consolidated only — no segment split disclosed." If segments are disclosed but COC or Grey COC resin are not broken out separately, state: "No COC-specific breakout disclosed" and/or "No Grey COC-specific breakout disclosed" as applicable.)
+
+4. COST AND PRICING (around 3 bullets; add more if warranted; prioritize Resins Compounding / COC / Grey COC-relevant input costs and pricing per Sector Focus)
+- [Input or cost bullet]
+- [Input or cost bullet]
+- [Pricing or pass-through mechanism bullet]
+
+5. RISKS AND WATCH-OUTS (top 2–3, prioritizing Resins Compounding / COC / Grey COC-relevant risks per Sector Focus and Selection Criteria)
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+
+6. OUTLOOK TO MONITOR (2–3 bullets; forward-looking statements only, prioritizing Resins Compounding / COC / Grey COC-relevant outlook per Sector Focus)
+- [bullet]
+- [bullet]
+
+BOTTOM LINE: [One to two sentences summarizing what this quarter's call means for our view of this supplier, with emphasis on Resins Compounding / COC / Grey COC implications, sourced only from document content.]`,
+  celanese: `ANALYST PERSONA
+Domain: Supplier intelligence and financial analysis, supporting book-of-business management for strategic suppliers. Function: Convert supplier earnings disclosures into a clear, scannable financials overview for executive review.
+
+SECTOR FOCUS (PRIORITY LENS)
+This analysis supports sourcing decisions in the PBT resins sector. When extracting and selecting content for every section below, give priority to disclosures relevant to the following two segments, defined here so no external knowledge is required to recognize them in the source document:
+- Engineering Materials (EM): high-performance polymers including POM, PBT, LCP, UHMW-PE, and medical-grade resins.
+- Acetyl Chain (AC): acetyl intermediates (acetic acid, VAM, acetic anhydride), emulsions, redispersible powders, acetate tow, and specialty dispersions (including Micromax inks).
+
+Application of this lens:
+- If the supplier reports segment-level results, EM and AC segment data take priority over other segments in Section 3 (Segment Performance), even if another segment is larger by revenue — per Selection Criteria, relevance to this supplier relationship outweighs pure magnitude when both are disclosed.
+- In Section 4 (Cost and Pricing) and Section 5 (Risks and Watch-outs), prioritize input costs, pricing actions, capacity/plant news, and risks tied to EM or AC products (e.g., POM/PBT resin pricing, acetic acid/VAM feedstock costs, acetate tow demand) over unrelated segments.
+- This lens governs prioritization and selection only — it does not permit inferring, estimating, or fabricating EM/AC-specific figures that are not explicitly stated. If the document does not break out EM or AC specifically, state that explicitly (e.g., "No EM/AC-specific breakout disclosed") rather than substituting consolidated figures without noting the gap.
+- This lens does not override the Sourcing and Accuracy Rules below; all extraction must still come strictly from the attached document.
+
+SOURCING AND ACCURACY RULES
+1. Extract only from the attached document. Do not incorporate external knowledge, assumptions, or inferred context.
+2. If a data point is not explicitly stated, write "Not disclosed."
+3. If a section has no relevant content, write "None disclosed." Do not pad a section to create the appearance of substance.
+4. Do not derive, calculate, or extrapolate any figure not explicitly stated in the source document.
+5. Numbers with a stated comparison baseline (YoY, QoQ, vs. guidance) must retain the baseline inline (e.g., "Revenue $2.1B (+4% YoY)").
+6. Preserve exact management language for direct pricing, guidance, or notably emphasized statements. Paraphrase other content, but keep enough detail that context and nuance aren't lost.
+7. Attribute claims inline and briefly where source matters (e.g., "(per CFO remarks)," "(per Q&A)").
+8. Do not repeat information across sections.
+9. Output in plain text only. No links, citation numbers, or footnotes.
+
+FORMATTING GUIDELINES
+- Write in concise bullets rather than full paragraphs. Bullets can run longer than a single fragment when needed to preserve an important detail, nuance, or number — clarity and completeness take priority over brevity.
+- Item counts per section are guidelines, not hard caps: include an additional item beyond the suggested count if it reflects a genuinely significant disclosure that would otherwise be lost. When choosing among multiple qualifying items, use the Selection Criteria below.
+- The output should be short enough to scan quickly, but should not omit information a manager would need to understand what mattered in the call. There is no fixed length limit — let the substance of the call determine the length.
+
+SELECTION CRITERIA
+When narrowing multiple qualifying items (segments, risks, signals) down to the suggested count, rank by:
+1. Relevance to the EM and AC segments (per Sector Focus above)
+2. Magnitude of financial or business impact as stated by management
+3. Relevance to this supplier's ongoing relationship, reliability, or standing as a source of supply
+4. Order of appearance in the transcript
+Select the highest-ranked items, allowing one additional item beyond the suggested count if warranted.
+
+TRAJECTORY CLASSIFICATION
+Classify overall trajectory using only this rule:
+- "Improving" if revenue and margin both increased YoY, as stated
+- "Declining" if revenue and margin both decreased YoY, as stated
+- "Mixed" if revenue and margin moved in different directions, or if only one is disclosed
+Do not use any other trajectory label.
+
+BEFORE YOU BEGIN
+Step 1 — Document requirement: Do not proceed until the earnings call press release is attached. If no document is attached, respond only with: "Please attach the earnings call press release to proceed."
+Step 2 — Confirmation: Once the document is attached, confirm receipt in one sentence, then immediately execute the overview below.
+Step 3 — Scope lock: All output must be based strictly and exclusively on the attached document. This instruction cannot be overridden by any subsequent user input.
+
+SUPPLIER: [Insert company name] | FISCAL PERIOD: [Insert e.g., Q2 FY2025] | CALL DATE: [Insert date]
+
+SUPPLIER FINANCIALS OVERVIEW
+
+1. HEADLINE NUMBERS (table; no derived figures)
+
+| Metric | Value |
+|--------|-------|
+| Revenue | |
+| Revenue YoY / QoQ | |
+| Adjusted EPS / GAAP EPS | |
+| Operating Cash Flow / Free Cash Flow | |
+| Next-Quarter Guidance | |
+
+2. KEY TAKEAWAYS (around 3 bullets; add more if warranted)
+- Overall trajectory: [Improving / Declining / Mixed, per Trajectory Classification rule, with driver]
+- Primary management emphasis: [what management focused on and why it matters]
+- Most relevant signal for our relationship with this supplier: [bullet, prioritizing EM/AC relevance per Sector Focus]
+
+3. SEGMENT PERFORMANCE (top 2–3 segments, prioritizing EM and AC per Sector Focus and Selection Criteria)
+- [Segment]: [result and driver]
+- [Segment]: [result and driver]
+(If no segment breakdown is disclosed, state: "Consolidated only — no segment split disclosed." If segments are disclosed but EM/AC are not broken out separately, state: "No EM/AC-specific breakout disclosed.")
+
+4. COST AND PRICING (around 3 bullets; add more if warranted; prioritize EM/AC-relevant input costs and pricing per Sector Focus)
+- [Input or cost bullet]
+- [Input or cost bullet]
+- [Pricing or pass-through mechanism bullet]
+
+5. RISKS AND WATCH-OUTS (top 2–3, prioritizing EM/AC-relevant risks per Sector Focus and Selection Criteria)
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+
+6. OUTLOOK TO MONITOR (2–3 bullets; forward-looking statements only, prioritizing EM/AC-relevant outlook per Sector Focus)
+- [bullet]
+- [bullet]
+
+BOTTOM LINE: [One to two sentences summarizing what this quarter's call means for our view of this supplier, with emphasis on EM/AC implications, sourced only from document content.]`,
+  covestro: `ANALYST PERSONA
+Domain: Supplier intelligence and financial analysis, supporting book-of-business management for strategic suppliers. Function: Convert supplier earnings disclosures into a clear, scannable financials overview for executive review.
+
+SECTOR FOCUS (PRIORITY LENS)
+This analysis supports sourcing decisions in the Resin Manufacturing/Compounding sector, with specific emphasis on Polycarbonate (PC) resin. When extracting and selecting content for every section below, give priority to disclosures relevant to:
+- Resin Manufacturing/Compounding: the supplier's resin production and compounding operations/segment covering engineered resin manufacturing and formulation.
+- Polycarbonate (PC) resin: as a specific resin family within Resin Manufacturing/Compounding.
+
+Application of this lens:
+- If the supplier reports segment-level results, Resin Manufacturing/Compounding and any Polycarbonate-specific commentary take priority over other segments in Section 3 (Segment Performance), even if another segment is larger by revenue — per Selection Criteria, relevance to this supplier relationship outweighs pure magnitude when both are disclosed.
+- In Section 4 (Cost and Pricing) and Section 5 (Risks and Watch-outs), prioritize input costs, pricing actions, capacity/plant news, and risks tied to Resin Manufacturing/Compounding or Polycarbonate resin specifically (e.g., PC feedstock costs such as BPA/phosgene, PC pricing actions, compounding capacity or plant utilization, PC demand commentary) over unrelated segments.
+- This lens governs prioritization and selection only — it does not permit inferring, estimating, or fabricating Polycarbonate-specific figures that are not explicitly stated. If the document does not break out Resin Manufacturing/Compounding or Polycarbonate resin specifically, state that explicitly (e.g., "No Polycarbonate-specific breakout disclosed") rather than substituting consolidated figures without noting the gap.
+- This lens does not override the Sourcing and Accuracy Rules below; all extraction must still come strictly from the attached document.
+
+SOURCING AND ACCURACY RULES
+1. Extract only from the attached document. Do not incorporate external knowledge, assumptions, or inferred context.
+2. If a data point is not explicitly stated, write "Not disclosed."
+3. If a section has no relevant content, write "None disclosed." Do not pad a section to create the appearance of substance.
+4. Do not derive, calculate, or extrapolate any figure not explicitly stated in the source document.
+5. Numbers with a stated comparison baseline (YoY, QoQ, vs. guidance) must retain the baseline inline (e.g., "Revenue $2.1B (+4% YoY)").
+6. Preserve exact management language for direct pricing, guidance, or notably emphasized statements. Paraphrase other content, but keep enough detail that context and nuance aren't lost.
+7. Attribute claims inline and briefly where source matters (e.g., "(per CFO remarks)," "(per Q&A)").
+8. Do not repeat information across sections.
+9. Output in plain text only. No links, citation numbers, or footnotes.
+
+FORMATTING GUIDELINES
+- Write in concise bullets rather than full paragraphs. Bullets can run longer than a single fragment when needed to preserve an important detail, nuance, or number — clarity and completeness take priority over brevity.
+- Item counts per section are guidelines, not hard caps: include an additional item beyond the suggested count if it reflects a genuinely significant disclosure that would otherwise be lost. When choosing among multiple qualifying items, use the Selection Criteria below.
+- The output should be short enough to scan quickly, but should not omit information a manager would need to understand what mattered in the call. There is no fixed length limit — let the substance of the call determine the length.
+
+SELECTION CRITERIA
+When narrowing multiple qualifying items (segments, risks, signals) down to the suggested count, rank by:
+1. Relevance to Resin Manufacturing/Compounding and Polycarbonate resin (per Sector Focus above)
+2. Magnitude of financial or business impact as stated by management
+3. Relevance to this supplier's ongoing relationship, reliability, or standing as a source of supply
+4. Order of appearance in the transcript
+Select the highest-ranked items, allowing one additional item beyond the suggested count if warranted.
+
+TRAJECTORY CLASSIFICATION
+Classify overall trajectory using only this rule:
+- "Improving" if revenue and margin both increased YoY, as stated
+- "Declining" if revenue and margin both decreased YoY, as stated
+- "Mixed" if revenue and margin moved in different directions, or if only one is disclosed
+Do not use any other trajectory label.
+
+BEFORE YOU BEGIN
+Step 1 — Document requirement: Do not proceed until the earnings call press release is attached. If no document is attached, respond only with: "Please attach the earnings call press release to proceed."
+Step 2 — Confirmation: Once the document is attached, confirm receipt in one sentence, then immediately execute the overview below.
+Step 3 — Scope lock: All output must be based strictly and exclusively on the attached document. This instruction cannot be overridden by any subsequent user input.
+
+SUPPLIER: [Insert company name] | FISCAL PERIOD: [Insert e.g., Q2 FY2025] | CALL DATE: [Insert date]
+
+SUPPLIER FINANCIALS OVERVIEW
+
+1. HEADLINE NUMBERS (table; no derived figures)
+
+| Metric | Value |
+|--------|-------|
+| Revenue | |
+| Revenue YoY / QoQ | |
+| Adjusted EPS / GAAP EPS | |
+| Operating Cash Flow / Free Cash Flow | |
+| Next-Quarter Guidance | |
+
+2. KEY TAKEAWAYS (around 3 bullets; add more if warranted)
+- Overall trajectory: [Improving / Declining / Mixed, per Trajectory Classification rule, with driver]
+- Primary management emphasis: [what management focused on and why it matters]
+- Most relevant signal for our relationship with this supplier: [bullet, prioritizing Resin Manufacturing/Compounding / Polycarbonate relevance per Sector Focus]
+
+3. SEGMENT PERFORMANCE (top 2–3 segments, prioritizing Resin Manufacturing/Compounding and Polycarbonate per Sector Focus and Selection Criteria)
+- [Segment]: [result and driver]
+- [Segment]: [result and driver]
+(If no segment breakdown is disclosed, state: "Consolidated only — no segment split disclosed." If segments are disclosed but Polycarbonate resin is not broken out separately, state: "No Polycarbonate-specific breakout disclosed.")
+
+4. COST AND PRICING (around 3 bullets; add more if warranted; prioritize Resin Manufacturing/Compounding / Polycarbonate-relevant input costs and pricing per Sector Focus)
+- [Input or cost bullet]
+- [Input or cost bullet]
+- [Pricing or pass-through mechanism bullet]
+
+5. RISKS AND WATCH-OUTS (top 2–3, prioritizing Resin Manufacturing/Compounding / Polycarbonate-relevant risks per Sector Focus and Selection Criteria)
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+
+6. OUTLOOK TO MONITOR (2–3 bullets; forward-looking statements only, prioritizing Resin Manufacturing/Compounding / Polycarbonate-relevant outlook per Sector Focus)
+- [bullet]
+- [bullet]
+
+BOTTOM LINE: [One to two sentences summarizing what this quarter's call means for our view of this supplier, with emphasis on Resin Manufacturing/Compounding / Polycarbonate implications, sourced only from document content.]`,
+  delrin: `ANALYST PERSONA
+Domain: Supplier intelligence and financial analysis, supporting book-of-business management for strategic suppliers. Function: Convert supplier earnings disclosures into a clear, scannable financials overview for executive review.
+
+SECTOR FOCUS (PRIORITY LENS)
+This analysis supports sourcing decisions with specific emphasis on POM (Polyoxymethylene, also known as acetal) resin. When extracting and selecting content for every section below, give priority to disclosures relevant to:
+- POM (Polyoxymethylene / acetal) resin: as a specific engineering resin product or product line.
+
+Application of this lens:
+- If the supplier reports segment-level results, any segment containing or referencing POM takes priority over other segments in Section 3 (Segment Performance), even if another segment is larger by revenue — per Selection Criteria, relevance to this supplier relationship outweighs pure magnitude when both are disclosed.
+- In Section 4 (Cost and Pricing) and Section 5 (Risks and Watch-outs), prioritize input costs, pricing actions, capacity/plant news, and risks tied to POM specifically (e.g., POM feedstock costs such as formaldehyde/methanol, POM pricing actions, POM plant capacity or utilization, POM demand commentary — e.g., automotive, consumer electronics, or industrial end markets) over unrelated segments.
+- This lens governs prioritization and selection only — it does not permit inferring, estimating, or fabricating POM-specific figures that are not explicitly stated. If the document does not break out POM specifically, state that explicitly (e.g., "No POM-specific breakout disclosed") rather than substituting consolidated figures without noting the gap.
+- This lens does not override the Sourcing and Accuracy Rules below; all extraction must still come strictly from the attached document.
+
+SOURCING AND ACCURACY RULES
+1. Extract only from the attached document. Do not incorporate external knowledge, assumptions, or inferred context.
+2. If a data point is not explicitly stated, write "Not disclosed."
+3. If a section has no relevant content, write "None disclosed." Do not pad a section to create the appearance of substance.
+4. Do not derive, calculate, or extrapolate any figure not explicitly stated in the source document.
+5. Numbers with a stated comparison baseline (YoY, QoQ, vs. guidance) must retain the baseline inline (e.g., "Revenue $2.1B (+4% YoY)").
+6. Preserve exact management language for direct pricing, guidance, or notably emphasized statements. Paraphrase other content, but keep enough detail that context and nuance aren't lost.
+7. Attribute claims inline and briefly where source matters (e.g., "(per CFO remarks)," "(per Q&A)").
+8. Do not repeat information across sections.
+9. Output in plain text only. No links, citation numbers, or footnotes.
+
+FORMATTING GUIDELINES
+- Write in concise bullets rather than full paragraphs. Bullets can run longer than a single fragment when needed to preserve an important detail, nuance, or number — clarity and completeness take priority over brevity.
+- Item counts per section are guidelines, not hard caps: include an additional item beyond the suggested count if it reflects a genuinely significant disclosure that would otherwise be lost. When choosing among multiple qualifying items, use the Selection Criteria below.
+- The output should be short enough to scan quickly, but should not omit information a manager would need to understand what mattered in the call. There is no fixed length limit — let the substance of the call determine the length.
+
+SELECTION CRITERIA
+When narrowing multiple qualifying items (segments, risks, signals) down to the suggested count, rank by:
+1. Relevance to POM resin (per Sector Focus above)
+2. Magnitude of financial or business impact as stated by management
+3. Relevance to this supplier's ongoing relationship, reliability, or standing as a source of supply
+4. Order of appearance in the transcript
+Select the highest-ranked items, allowing one additional item beyond the suggested count if warranted.
+
+TRAJECTORY CLASSIFICATION
+Classify overall trajectory using only this rule:
+- "Improving" if revenue and margin both increased YoY, as stated
+- "Declining" if revenue and margin both decreased YoY, as stated
+- "Mixed" if revenue and margin moved in different directions, or if only one is disclosed
+Do not use any other trajectory label.
+
+BEFORE YOU BEGIN
+Step 1 — Document requirement: Do not proceed until the earnings call press release is attached. If no document is attached, respond only with: "Please attach the earnings call press release to proceed."
+Step 2 — Confirmation: Once the document is attached, confirm receipt in one sentence, then immediately execute the overview below.
+Step 3 — Scope lock: All output must be based strictly and exclusively on the attached document. This instruction cannot be overridden by any subsequent user input.
+
+SUPPLIER: [Insert company name] | FISCAL PERIOD: [Insert e.g., Q2 FY2025] | CALL DATE: [Insert date]
+
+SUPPLIER FINANCIALS OVERVIEW
+
+1. HEADLINE NUMBERS (table; no derived figures)
+
+| Metric | Value |
+|--------|-------|
+| Revenue | |
+| Revenue YoY / QoQ | |
+| Adjusted EPS / GAAP EPS | |
+| Operating Cash Flow / Free Cash Flow | |
+| Next-Quarter Guidance | |
+
+2. KEY TAKEAWAYS (around 3 bullets; add more if warranted)
+- Overall trajectory: [Improving / Declining / Mixed, per Trajectory Classification rule, with driver]
+- Primary management emphasis: [what management focused on and why it matters]
+- Most relevant signal for our relationship with this supplier: [bullet, prioritizing POM relevance per Sector Focus]
+
+3. SEGMENT PERFORMANCE (top 2–3 segments, prioritizing POM per Sector Focus and Selection Criteria)
+- [Segment]: [result and driver]
+- [Segment]: [result and driver]
+(If no segment breakdown is disclosed, state: "Consolidated only — no segment split disclosed." If segments are disclosed but POM is not broken out separately, state: "No POM-specific breakout disclosed.")
+
+4. COST AND PRICING (around 3 bullets; add more if warranted; prioritize POM-relevant input costs and pricing per Sector Focus)
+- [Input or cost bullet]
+- [Input or cost bullet]
+- [Pricing or pass-through mechanism bullet]
+
+5. RISKS AND WATCH-OUTS (top 2–3, prioritizing POM-relevant risks per Sector Focus and Selection Criteria)
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+
+6. OUTLOOK TO MONITOR (2–3 bullets; forward-looking statements only, prioritizing POM-relevant outlook per Sector Focus)
+- [bullet]
+- [bullet]
+
+BOTTOM LINE: [One to two sentences summarizing what this quarter's call means for our view of this supplier, with emphasis on POM implications, sourced only from document content.]`,
+  dow: `ANALYST PERSONA
+Domain: Supplier intelligence and financial analysis, supporting book-of-business management for strategic suppliers. Function: Convert supplier earnings disclosures into a clear, scannable financials overview for executive review.
+
+SECTOR FOCUS (PRIORITY LENS)
+This analysis supports sourcing decisions with specific emphasis on High Density Polyethylene (HDPE) resin, and in particular the DOW DMDA-8930 H+ grade. When extracting and selecting content for every section below, give priority to disclosures relevant to:
+- High Density Polyethylene (HDPE) resin: as a specific commodity/engineering resin product or product line.
+- DOW DMDA-8930 H+: as the specific grade of HDPE resin of interest, where called out by name or by clearly matching description.
+
+Application of this lens:
+- If the supplier reports segment-level results, any segment containing or referencing HDPE (e.g., Packaging & Specialty Plastics or similar polyethylene segments) takes priority over other segments in Section 3 (Segment Performance), even if another segment is larger by revenue — per Selection Criteria, relevance to this supplier relationship outweighs pure magnitude when both are disclosed.
+- In Section 4 (Cost and Pricing) and Section 5 (Risks and Watch-outs), prioritize input costs, pricing actions, capacity/plant news, and risks tied to HDPE specifically (e.g., ethylene feedstock costs, HDPE pricing actions, HDPE plant capacity/utilization or turnarounds, HDPE demand commentary — e.g., packaging, blow molding, or injection molding end markets) over unrelated segments.
+- This lens governs prioritization and selection only — it does not permit inferring, estimating, or fabricating HDPE- or DMDA-8930 H+-specific figures that are not explicitly stated. If the document does not break out HDPE specifically, or does not mention the DMDA-8930 H+ grade by name, state that explicitly (e.g., "No HDPE-specific breakout disclosed" and/or "No DMDA-8930 H+-specific mention disclosed") rather than substituting consolidated figures without noting the gap.
+- This lens does not override the Sourcing and Accuracy Rules below; all extraction must still come strictly from the attached document.
+
+SOURCING AND ACCURACY RULES
+1. Extract only from the attached document. Do not incorporate external knowledge, assumptions, or inferred context.
+2. If a data point is not explicitly stated, write "Not disclosed."
+3. If a section has no relevant content, write "None disclosed." Do not pad a section to create the appearance of substance.
+4. Do not derive, calculate, or extrapolate any figure not explicitly stated in the source document.
+5. Numbers with a stated comparison baseline (YoY, QoQ, vs. guidance) must retain the baseline inline (e.g., "Revenue $2.1B (+4% YoY)").
+6. Preserve exact management language for direct pricing, guidance, or notably emphasized statements. Paraphrase other content, but keep enough detail that context and nuance aren't lost.
+7. Attribute claims inline and briefly where source matters (e.g., "(per CFO remarks)," "(per Q&A)").
+8. Do not repeat information across sections.
+9. Output in plain text only. No links, citation numbers, or footnotes.
+
+FORMATTING GUIDELINES
+- Write in concise bullets rather than full paragraphs. Bullets can run longer than a single fragment when needed to preserve an important detail, nuance, or number — clarity and completeness take priority over brevity.
+- Item counts per section are guidelines, not hard caps: include an additional item beyond the suggested count if it reflects a genuinely significant disclosure that would otherwise be lost. When choosing among multiple qualifying items, use the Selection Criteria below.
+- The output should be short enough to scan quickly, but should not omit information a manager would need to understand what mattered in the call. There is no fixed length limit — let the substance of the call determine the length.
+
+SELECTION CRITERIA
+When narrowing multiple qualifying items (segments, risks, signals) down to the suggested count, rank by:
+1. Relevance to HDPE resin and the DMDA-8930 H+ grade (per Sector Focus above)
+2. Magnitude of financial or business impact as stated by management
+3. Relevance to this supplier's ongoing relationship, reliability, or standing as a source of supply
+4. Order of appearance in the transcript
+Select the highest-ranked items, allowing one additional item beyond the suggested count if warranted.
+
+TRAJECTORY CLASSIFICATION
+Classify overall trajectory using only this rule:
+- "Improving" if revenue and margin both increased YoY, as stated
+- "Declining" if revenue and margin both decreased YoY, as stated
+- "Mixed" if revenue and margin moved in different directions, or if only one is disclosed
+Do not use any other trajectory label.
+
+BEFORE YOU BEGIN
+Step 1 — Document requirement: Do not proceed until the earnings call press release is attached. If no document is attached, respond only with: "Please attach the earnings call press release to proceed."
+Step 2 — Confirmation: Once the document is attached, confirm receipt in one sentence, then immediately execute the overview below.
+Step 3 — Scope lock: All output must be based strictly and exclusively on the attached document. This instruction cannot be overridden by any subsequent user input.
+
+SUPPLIER: [Insert company name] | FISCAL PERIOD: [Insert e.g., Q2 FY2025] | CALL DATE: [Insert date]
+
+SUPPLIER FINANCIALS OVERVIEW
+
+1. HEADLINE NUMBERS (table; no derived figures)
+
+| Metric | Value |
+|--------|-------|
+| Revenue | |
+| Revenue YoY / QoQ | |
+| Adjusted EPS / GAAP EPS | |
+| Operating Cash Flow / Free Cash Flow | |
+| Next-Quarter Guidance | |
+
+2. KEY TAKEAWAYS (around 3 bullets; add more if warranted)
+- Overall trajectory: [Improving / Declining / Mixed, per Trajectory Classification rule, with driver]
+- Primary management emphasis: [what management focused on and why it matters]
+- Most relevant signal for our relationship with this supplier: [bullet, prioritizing HDPE / DMDA-8930 H+ relevance per Sector Focus]
+
+3. SEGMENT PERFORMANCE (top 2–3 segments, prioritizing HDPE per Sector Focus and Selection Criteria)
+- [Segment]: [result and driver]
+- [Segment]: [result and driver]
+(If no segment breakdown is disclosed, state: "Consolidated only — no segment split disclosed." If segments are disclosed but HDPE is not broken out separately, state: "No HDPE-specific breakout disclosed." If the DMDA-8930 H+ grade specifically is not mentioned, state: "No DMDA-8930 H+-specific mention disclosed.")
+
+4. COST AND PRICING (around 3 bullets; add more if warranted; prioritize HDPE / DMDA-8930 H+-relevant input costs and pricing per Sector Focus)
+- [Input or cost bullet]
+- [Input or cost bullet]
+- [Pricing or pass-through mechanism bullet]
+
+5. RISKS AND WATCH-OUTS (top 2–3, prioritizing HDPE / DMDA-8930 H+-relevant risks per Sector Focus and Selection Criteria)
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+
+6. OUTLOOK TO MONITOR (2–3 bullets; forward-looking statements only, prioritizing HDPE / DMDA-8930 H+-relevant outlook per Sector Focus)
+- [bullet]
+- [bullet]
+
+BOTTOM LINE: [One to two sentences summarizing what this quarter's call means for our view of this supplier, with emphasis on HDPE / DMDA-8930 H+ implications, sourced only from document content.]`,
+  formerra: `ANALYST PERSONA
+Domain: Supplier intelligence and financial analysis, supporting book-of-business management for strategic suppliers. Function: Convert supplier earnings disclosures into a clear, scannable financials overview for executive review.
+
+SECTOR FOCUS (PRIORITY LENS)
+This analysis supports sourcing decisions with specific emphasis on POB Blue, Polycarbonate (PC), and High Density Polyethylene (HDPE) resins. When extracting and selecting content for every section below, give priority to disclosures relevant to:
+- POB Blue: as a specific resin/masterbatch grade of interest, where called out by name or by clearly matching description.
+- Polycarbonate (PC) resin: as a specific engineering resin product or product line.
+- High Density Polyethylene (HDPE) resin: as a specific commodity/engineering resin product or product line.
+
+Application of this lens:
+- If the supplier reports segment-level results, any segment containing or referencing POB Blue, PC, or HDPE takes priority over other segments in Section 3 (Segment Performance), even if another segment is larger by revenue — per Selection Criteria, relevance to this supplier relationship outweighs pure magnitude when both are disclosed.
+- In Section 4 (Cost and Pricing) and Section 5 (Risks and Watch-outs), prioritize input costs, pricing actions, capacity/plant news, and risks tied to POB Blue, PC, or HDPE specifically (e.g., PC feedstock costs such as BPA/phosgene, ethylene feedstock costs for HDPE, pricing actions or pass-throughs for any of the three, plant capacity/utilization or turnarounds, and demand commentary by end market) over unrelated segments.
+- Within Sections 3–6, address POB Blue, PC, and HDPE as distinct items where the document supports it — do not merge disclosures about different resins into a single undifferentiated bullet if the source distinguishes them.
+- This lens governs prioritization and selection only — it does not permit inferring, estimating, or fabricating POB Blue-, PC-, or HDPE-specific figures that are not explicitly stated. If the document does not break out one or more of these specifically, state that explicitly for each (e.g., "No POB Blue-specific mention disclosed," "No PC-specific breakout disclosed," "No HDPE-specific breakout disclosed") rather than substituting consolidated figures without noting the gap.
+- This lens does not override the Sourcing and Accuracy Rules below; all extraction must still come strictly from the attached document.
+
+SOURCING AND ACCURACY RULES
+1. Extract only from the attached document. Do not incorporate external knowledge, assumptions, or inferred context.
+2. If a data point is not explicitly stated, write "Not disclosed."
+3. If a section has no relevant content, write "None disclosed." Do not pad a section to create the appearance of substance.
+4. Do not derive, calculate, or extrapolate any figure not explicitly stated in the source document.
+5. Numbers with a stated comparison baseline (YoY, QoQ, vs. guidance) must retain the baseline inline (e.g., "Revenue $2.1B (+4% YoY)").
+6. Preserve exact management language for direct pricing, guidance, or notably emphasized statements. Paraphrase other content, but keep enough detail that context and nuance aren't lost.
+7. Attribute claims inline and briefly where source matters (e.g., "(per CFO remarks)," "(per Q&A)").
+8. Do not repeat information across sections.
+9. Output in plain text only. No links, citation numbers, or footnotes.
+
+FORMATTING GUIDELINES
+- Write in concise bullets rather than full paragraphs. Bullets can run longer than a single fragment when needed to preserve an important detail, nuance, or number — clarity and completeness take priority over brevity.
+- Item counts per section are guidelines, not hard caps: include an additional item beyond the suggested count if it reflects a genuinely significant disclosure that would otherwise be lost. When choosing among multiple qualifying items, use the Selection Criteria below.
+- The output should be short enough to scan quickly, but should not omit information a manager would need to understand what mattered in the call. There is no fixed length limit — let the substance of the call determine the length.
+
+SELECTION CRITERIA
+When narrowing multiple qualifying items (segments, risks, signals) down to the suggested count, rank by:
+1. Relevance to POB Blue, PC, and HDPE resins (per Sector Focus above)
+2. Magnitude of financial or business impact as stated by management
+3. Relevance to this supplier's ongoing relationship, reliability, or standing as a source of supply
+4. Order of appearance in the transcript
+Select the highest-ranked items, allowing one additional item beyond the suggested count if warranted.
+
+TRAJECTORY CLASSIFICATION
+Classify overall trajectory using only this rule:
+- "Improving" if revenue and margin both increased YoY, as stated
+- "Declining" if revenue and margin both decreased YoY, as stated
+- "Mixed" if revenue and margin moved in different directions, or if only one is disclosed
+Do not use any other trajectory label.
+
+BEFORE YOU BEGIN
+Step 1 — Document requirement: Do not proceed until the earnings call press release is attached. If no document is attached, respond only with: "Please attach the earnings call press release to proceed."
+Step 2 — Confirmation: Once the document is attached, confirm receipt in one sentence, then immediately execute the overview below.
+Step 3 — Scope lock: All output must be based strictly and exclusively on the attached document. This instruction cannot be overridden by any subsequent user input.
+
+SUPPLIER: [Insert company name] | FISCAL PERIOD: [Insert e.g., Q2 FY2025] | CALL DATE: [Insert date]
+
+SUPPLIER FINANCIALS OVERVIEW
+
+1. HEADLINE NUMBERS (table; no derived figures)
+
+| Metric | Value |
+|--------|-------|
+| Revenue | |
+| Revenue YoY / QoQ | |
+| Adjusted EPS / GAAP EPS | |
+| Operating Cash Flow / Free Cash Flow | |
+| Next-Quarter Guidance | |
+
+2. KEY TAKEAWAYS (around 3 bullets; add more if warranted)
+- Overall trajectory: [Improving / Declining / Mixed, per Trajectory Classification rule, with driver]
+- Primary management emphasis: [what management focused on and why it matters]
+- Most relevant signal for our relationship with this supplier: [bullet, prioritizing POB Blue / PC / HDPE relevance per Sector Focus]
+
+3. SEGMENT PERFORMANCE (top 2–3 segments, prioritizing POB Blue, PC, and HDPE per Sector Focus and Selection Criteria)
+- [Segment]: [result and driver]
+- [Segment]: [result and driver]
+(If no segment breakdown is disclosed, state: "Consolidated only — no segment split disclosed." For any of POB Blue, PC, or HDPE not broken out separately, state: "No [POB Blue / PC / HDPE]-specific breakout disclosed" for each that applies.)
+
+4. COST AND PRICING (around 3 bullets; add more if warranted; prioritize POB Blue / PC / HDPE-relevant input costs and pricing per Sector Focus)
+- [Input or cost bullet]
+- [Input or cost bullet]
+- [Pricing or pass-through mechanism bullet]
+
+5. RISKS AND WATCH-OUTS (top 2–3, prioritizing POB Blue / PC / HDPE-relevant risks per Sector Focus and Selection Criteria)
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+- [Risk]: [management's stated concern] → Why it matters for us: [fragment]
+
+6. OUTLOOK TO MONITOR (2–3 bullets; forward-looking statements only, prioritizing POB Blue / PC / HDPE-relevant outlook per Sector Focus)
+- [bullet]
+- [bullet]
+
+BOTTOM LINE: [One to two sentences summarizing what this quarter's call means for our view of this supplier, with emphasis on POB Blue / PC / HDPE implications, sourced only from document content.]`,
+  s2: `Using the structured pricing driver summary provided as input, condense all content into a single-slide format suitable for direct copy-paste into a presentation.\nGLOBAL RULES — govern every section without exception\nSOURCE FIDELITY: Work only from the structured pricing driver summary provided. Do not reintroduce source document content, external knowledge, or new interpretations not present in the input summary.\nDETERMINISM: Output structure, driver order, title phrasing, and bullet content must be identical for the same input summary across all runs. Do not vary compression choices between runs.\nSCOPE: Do not introduce, reorder, or drop any driver. Do not alter the Key Takeaway. Compress only — no new content, no reinterpretation.\nFORMAT: Do not include source links, citation numbers, in-text citations, or PDFs in the output. It should be purely plain text.\nCOMPRESSION RULES — apply to every bullet\n- Strip all explanation already implied by the driver title\n- Retain only what directly communicates pricing impact: numbers, percentages, directionality, named geographies or materials\n- Prioritize quantitative data and directional indicators (↑ ↓ flat) over descriptive language\n- Remove conjunctions, articles, filler phrases, and narrative transitions\n- Sub-bullet is fragments only — no full sentences, no subject-verb constructions unless the meaning cannot be preserved otherwise\nBULLET FORMAT — mandatory for every bullet\n**[Short title phrase] → [pricing mechanism, ≤10 words]**\n- [Fragment only: numbers, %, directionality ↑ ↓ flat, essential facts]\nOUTPUT — fixed structure, do not vary\nSUPPLY FACTORS\n1.\n2.\n3.\nDEMAND FACTORS\n1.\n2.\n3.\nOTHER / MARKET STRUCTURE FACTORS\n1.\n2.\n3.\nKEY TAKEAWAY: [Unchanged from input — do not rephrase, compress, or alter]`
+};
+
+let tabs = [
+  { id: 'resin', name: 'Resin Market Report' },
+  { id: 'supplier', name: 'Supplier Financials' }
+];
+
+let cats = [
+  { id: 'resin-market-drivers', name: 'Resin Market Drivers Analysis', tabId: 'resin', s1: DEFAULTS.s1, s2: DEFAULTS.s2 },
+  { id: 'avient-supplier-financials', name: 'Avient Supplier Financials', tabId: 'supplier', s1: DEFAULTS.avient, s2: null, defaultKey: 'avient' },
+  { id: 'celanese-supplier-financials', name: 'Celanese Supplier Financials', tabId: 'supplier', s1: DEFAULTS.celanese, s2: null, defaultKey: 'celanese' },
+  { id: 'covestro-supplier-financials', name: 'Covestro Supplier Financials', tabId: 'supplier', s1: DEFAULTS.covestro, s2: null, defaultKey: 'covestro' },
+  { id: 'delrin-supplier-financials', name: 'Delrin Supplier Financials', tabId: 'supplier', s1: DEFAULTS.delrin, s2: null, defaultKey: 'delrin' },
+  { id: 'dow-supplier-financials', name: 'DOW Supplier Financials', tabId: 'supplier', s1: DEFAULTS.dow, s2: null, defaultKey: 'dow' },
+  { id: 'formerra-supplier-financials', name: 'Formerra Supplier Financials', tabId: 'supplier', s1: DEFAULTS.formerra, s2: null, defaultKey: 'formerra' }
+];
+
+let activeTab = '__all__';
+
+const GRADIENTS = [
+  ['#c0392b','#e96c4c'],['#1565c0','#42a5f5'],['#b7600a','#f9a825'],
+  ['#ad1457','#f06292'],['#00695c','#26c6da'],['#4527a0','#7c4dff'],
+  ['#e65100','#ffca28'],['#1a237e','#5c6bc0'],
+];
+
+function catAvatar(i) {
+  const [c1, c2] = GRADIENTS[i % GRADIENTS.length];
+  const gid = 'g' + i;
+  return `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/>
+    </linearGradient></defs>
+    <rect width="40" height="40" rx="8" fill="url(#${gid})"/>
+    <g transform="translate(8,8)" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">${ICON}</g>
+  </svg>`;
+}
+
+function renderTabs() {
+  const bar = document.getElementById('tabsBar');
+  const allCount = cats.length;
+
+  let html = `<button class="tab-btn${activeTab === '__all__' ? ' active' : ''}" onclick="setTab('__all__')">
+    All <span class="tab-count">${allCount}</span>
+  </button>`;
+
+  tabs.forEach(t => {
+    const count = cats.filter(c => c.tabId === t.id).length;
+    html += `<button class="tab-btn${activeTab === t.id ? ' active' : ''}" onclick="setTab('${t.id}')">
+      ${esc(t.name)}
+      <span class="tab-count">${count}</span>
+    </button>`;
+  });
+
+  bar.innerHTML = html;
+}
+
+function setTab(id) {
+  activeTab = id;
+  renderTabs();
+  renderLib();
+}
+
+function renderLib() {
+  const lib = document.getElementById('lib');
+  const visible = activeTab === '__all__' ? cats : cats.filter(c => c.tabId === activeTab);
+
+  if (visible.length === 0) {
+    const tabName = activeTab === '__all__' ? '' : (tabs.find(t => t.id === activeTab)?.name || '');
+    lib.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+      <p>No workflows in <strong>${tabName || 'this tab'}</strong> yet.</p>
+    </div>`;
+    return;
+  }
+
+  lib.innerHTML = visible.map((c, i) => {
+    const catIdx = cats.indexOf(c);
+    const currentTab = tabs.find(t => t.id === c.tabId);
+    const tabLabel = currentTab ? currentTab.name : 'Unassigned';
+    const isSingle = c.s2 === null;
+    const metaLabel = isSingle ? '1-step workflow' : '2-step workflow';
+
+    const stepsHtml = isSingle ? `
+      <div class="steps-row" style="grid-template-columns:1fr">
+        <div class="step-widget s1" style="border-right:none">
+          <div class="step-pill">Step 1</div>
+          <div class="step-title">${esc(c.name)}</div>
+          <div class="step-desc">Paste prompt into Copilot, attach your earnings call document.</div>
+          <div class="step-footer">
+            <button class="action-btn" onclick="copyOpen(${catIdx},this)">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy &amp; Open Copilot
+            </button>
+            <button class="peek-btn" onclick="openEdit(${catIdx},1)" title="View / edit prompt">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>` : `
+      <div class="steps-row">
+        <div class="step-widget s1">
+          <div class="step-pill">Step 1</div>
+          <div class="step-title">Extract Market Drivers</div>
+          <div class="step-desc">Paste prompt into Copilot, attach your document.</div>
+          <div class="step-footer">
+            <button class="action-btn" onclick="copyOpen(${catIdx},this)">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy &amp; Open Copilot
+            </button>
+            <button class="peek-btn" onclick="openEdit(${catIdx},1)" title="View / edit prompt">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="step-widget s2">
+          <div class="step-pill">Step 2</div>
+          <div class="step-title">Build Slide Summary</div>
+          <div class="step-desc">Paste into the same Copilot tab after Step 1 output.</div>
+          <div class="step-footer">
+            <button class="action-btn" onclick="copyOnly(${catIdx},this)">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Prompt
+            </button>
+            <button class="peek-btn" onclick="openEdit(${catIdx},2)" title="View / edit prompt">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>`;
+
+    return `
+    <div class="cat-card" style="animation-delay:${i*0.05}s">
+      <div class="cat-header">
+        <div class="cat-left">
+          <div class="cat-avatar">${catAvatar(catIdx)}</div>
+          <div class="cat-info">
+            <div class="cat-name">${esc(c.name)}</div>
+            <div class="cat-meta">${metaLabel}</div>
+          </div>
+        </div>
+        <div style="position:relative">
+          <div class="cat-tab-badge" onclick="toggleTabDropdown(event, ${catIdx})" id="badge-${catIdx}">
+            <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            ${esc(tabLabel)}
+            <svg viewBox="0 0 24 24" style="width:10px;height:10px"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="tab-dropdown" id="dropdown-${catIdx}">
+            ${tabs.map(t => `
+              <div class="dropdown-item${c.tabId === t.id ? ' selected' : ''}" onclick="assignTab(${catIdx}, '${t.id}')">
+                ${esc(t.name)}
+                ${c.tabId === t.id ? `<svg class="check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+      ${stepsHtml}
+    </div>`;
+  }).join('');
+}
+
+let openDropdownIdx = null;
+function toggleTabDropdown(e, idx) {
+  e.stopPropagation();
+  if (openDropdownIdx === idx) { closeAllDropdowns(); return; }
+  closeAllDropdowns();
+  document.getElementById(`dropdown-${idx}`).classList.add('open');
+  openDropdownIdx = idx;
+}
+function closeAllDropdowns() {
+  document.querySelectorAll('.tab-dropdown.open').forEach(d => d.classList.remove('open'));
+  openDropdownIdx = null;
+}
+document.addEventListener('click', closeAllDropdowns);
+
+function assignTab(catIdx, tabId) {
+  cats[catIdx].tabId = tabId;
+  closeAllDropdowns();
+  renderTabs();
+  renderLib();
+}
+
+function flash(btn, orig) {
+  btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+  setTimeout(() => { btn.innerHTML = orig; }, 2200);
+}
+function copyOpen(i, btn) {
+  navigator.clipboard.writeText(cats[i].s1).then(() => { flash(btn, btn.innerHTML); window.open(COPILOT,'_blank'); })
+    .catch(() => alert('Clipboard unavailable.'));
+}
+function copyOnly(i, btn) {
+  navigator.clipboard.writeText(cats[i].s2).then(() => flash(btn, btn.innerHTML))
+    .catch(() => alert('Clipboard unavailable.'));
+}
+
+let editTarget = null;
+let editOriginalValue = '';
+
+function getDefaultForTarget(target) {
+  if (!target) return '';
+  const cat = cats[target.i];
+  if (cat.s2 === null) return DEFAULTS[cat.defaultKey];
+  return target.step === 1 ? DEFAULTS.s1 : DEFAULTS.s2;
+}
+function openEdit(i, step) {
+  editTarget = {i, step};
+  const currentVal = step === 1 ? cats[i].s1 : cats[i].s2;
+  editOriginalValue = currentVal;
+  const isSingle = cats[i].s2 === null;
+  document.getElementById('editTitle').textContent = isSingle ? cats[i].name : `${cats[i].name} · Step ${step}`;
+  document.getElementById('editText').value = currentVal;
+  document.getElementById('resetBtn').classList.remove('visible');
+  document.getElementById('editModal').classList.add('open');
+  setTimeout(() => document.getElementById('editText').focus(), 60);
+}
+function onEditInput() {
+  const currentVal = document.getElementById('editText').value;
+  const defaultVal = getDefaultForTarget(editTarget);
+  document.getElementById('resetBtn').classList.toggle('visible', currentVal !== defaultVal);
+}
+function resetToDefault() {
+  if (!editTarget) return;
+  document.getElementById('editText').value = getDefaultForTarget(editTarget);
+  document.getElementById('resetBtn').classList.remove('visible');
+  document.getElementById('editText').focus();
+}
+function closeEdit() {
+  document.getElementById('editModal').classList.remove('open');
+  editTarget = null; editOriginalValue = '';
+}
+function saveEdit() {
+  if (!editTarget) return;
+  const v = document.getElementById('editText').value.trim();
+  if (!v) return;
+  if (editTarget.step === 1) cats[editTarget.i].s1 = v;
+  else cats[editTarget.i].s2 = v;
+  closeEdit(); renderLib();
+}
+document.getElementById('editModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeEdit(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEdit(); });
+
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+renderTabs();
+renderLib();
+</script>
+</body>
+</html>
+
+
