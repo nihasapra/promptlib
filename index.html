@@ -1050,14 +1050,11 @@ function renderLib() {
     const currentTab = tabs.find(t => t.id === c.tabId);
     const tabLabel = currentTab ? currentTab.name : 'Unassigned';
     const isSingle = c.s2 === null;
-    const metaLabel = isSingle ? '1-step workflow' : '2-step workflow';
 
     const stepsHtml = isSingle ? `
       <div class="steps-row" style="grid-template-columns:1fr">
         <div class="step-widget s1" style="border-right:none">
-          <div class="step-pill">Step 1</div>
-          <div class="step-title">${esc(c.name)}</div>
-          <div class="step-desc">Paste prompt into Copilot, attach your earnings call document.</div>
+          <div class="step-title">Generate Financials Overview</div>
           <div class="step-footer">
             <button class="action-btn" onclick="copyOpen(${catIdx},this)">
               <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1071,7 +1068,6 @@ function renderLib() {
       </div>` : `
       <div class="steps-row">
         <div class="step-widget s1">
-          <div class="step-pill">Step 1</div>
           <div class="step-title">Extract Market Drivers</div>
           <div class="step-desc">Paste prompt into Copilot, attach your document.</div>
           <div class="step-footer">
@@ -1085,7 +1081,6 @@ function renderLib() {
           </div>
         </div>
         <div class="step-widget s2">
-          <div class="step-pill">Step 2</div>
           <div class="step-title">Build Slide Summary</div>
           <div class="step-desc">Paste into the same Copilot tab after Step 1 output.</div>
           <div class="step-footer">
@@ -1107,7 +1102,6 @@ function renderLib() {
           <div class="cat-avatar">${catAvatar(catIdx)}</div>
           <div class="cat-info">
             <div class="cat-name">${esc(c.name)}</div>
-            <div class="cat-meta">${metaLabel}</div>
           </div>
         </div>
         <div style="position:relative">
