@@ -270,6 +270,16 @@
   .stage-title { font-family: var(--serif); font-size: 20px; line-height: 1.25; color: var(--text); }
   .stage-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
+  /* Sourcing note — only on workflows that permit external research */
+  .stage-note {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 12px; line-height: 1.55; color: var(--muted);
+    background: var(--sig-dim); border: 1px solid var(--sig-border);
+    border-radius: var(--r-sm); padding: 9px 12px;
+  }
+  .stage-note svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 2px; stroke: var(--sig-h); fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
+  .stage-note strong { color: var(--text); font-weight: 600; }
+
   /* Prompt preview */
   .prompt-shell { border: 1px solid var(--border); border-radius: var(--r-sm); overflow: hidden; background: #232A2F; transition: border-color 0.16s; }
   .stage:hover .prompt-shell { border-color: var(--border-h); }
@@ -1088,78 +1098,376 @@ SUPPLIER FINANCIALS OVERVIEW
 - [bullet]
 
 BOTTOM LINE: [One to two sentences summarizing what this quarter's call means for our view of this supplier, with emphasis on POB Blue / PC / HDPE implications, sourced only from document content.]`,
-  s2: `ANALYST PERSONA
-Domain: Commodity and material market intelligence, supporting sourcing and pricing decisions for strategic resin categories. Function: Condense a completed structured pricing driver summary into a single-slide format suitable for direct copy-paste into a presentation.
+  bobonly: `ANALYST PERSONA
+Domain: Strategic sourcing, supplier relationship management (SRM), supplier intelligence, operations strategy, and supply risk management. Function: Convert a Supplier Book of Business workbook into a concise executive supplier profile for sourcing leadership reviews, QBRs, EBRs, category strategy discussions, supplier segmentation exercises, capacity planning decisions, and risk management activities.
 
-SECTOR FOCUS (PRIORITY LENS)
-This analysis supports sourcing decisions in the [insert material/resin, e.g., PBT] market. The input summary has already applied this lens during driver selection.
+Objective: Produce a one-page supplier summary giving executives immediate understanding of supplier importance, business relationship status, spend exposure, financial health, supply continuity risks, capacity outlook, commercial status, strategic opportunities, and recommended actions. The output should read like a sourcing executive briefing, not a data extract.
+
+DOCUMENT SCOPE (PRIORITY LENS)
+The attached document is a Supplier Book of Business workbook. It may contain: supplier profile, supplier contacts, agreements, supply chain mapping, component information, manufacturing locations, capacity planning, pricing data, spend forecasts, financial assessments, risk assessments, supplier scorecards, QCFEM evaluations, strategic positioning, meeting history, open projects, and leadership engagement records.
 
 Application of this lens:
-
-No re-prioritization occurs at this stage. Driver selection, ranking, and bucket assignment are inherited from the input summary and are not revisited.
-Where compression forces a choice between two retained details within a single bullet, keep the one tied to the target material, its direct feedstocks, or its named end-use segments.
-This lens does not permit reintroducing material-specific detail that the input summary does not contain.
-This lens does not override the Sourcing and Accuracy Rules below.
+- Generate executive insight from workbook data — do not merely copy workbook contents into the output format.
+- Populate only fields supported by workbook data. Flag gaps explicitly rather than filling them.
+- Where a section instructs use of a specific tab (Supplier Financials, QCFEM, Positioning, Log Book), draw primarily from that tab.
+- This lens governs prioritization and selection only. It does not override the Sourcing and Accuracy Rules below.
 
 SOURCING AND ACCURACY RULES
+1. Use only information explicitly contained within the workbook. Never use external sources.
+2. Never infer facts not supported by workbook content.
+3. Never estimate revenue, EBITDA, margins, market share, supplier rankings, capacity, or customer exposure.
+4. If information is unavailable, write: "Not disclosed in Book of Business."
+5. If a section exists but is empty, write: "No information currently maintained."
+6. If financial data specifically is unavailable, write: "Financial information is not currently maintained in the Book of Business."
+7. If multiple workbook tabs contain conflicting information, use the most recent dated information and note the discrepancy.
+8. Do not duplicate content across sections.
+9. Output in plain text only. No links, citation numbers, or footnotes.
 
-Work only from the structured pricing driver summary provided as input. Do not reintroduce source document content, external knowledge, or new interpretations not present in the input summary.
-Do not introduce, reorder, or drop any driver. The count and sequence of bullets in each bucket must match the input exactly.
-Do not alter, rephrase, compress, or reinterpret the Key Takeaway. Reproduce it verbatim.
-Do not derive, calculate, or extrapolate any figure not present in the input summary.
-Numbers with a stated comparison baseline (MoM, YoY, vs. forecast) must retain the baseline inline (e.g., "$1,850/t ↓6% MoM").
-Use the input summary's own terminology verbatim. Do not substitute synonyms for the same concept.
-If a bucket contains fewer than three drivers in the input, reproduce only those drivers. Do not pad to reach three.
-Compress only — no new content, no reinterpretation, no cross-bucket movement.
-Output in plain text only. No links, citation numbers, in-text citations, or footnotes.
+EXECUTIVE WRITING STYLE
+Write for VP Procurement, Director Procurement, Category Managers, Supplier Relationship Managers, and executive leadership teams.
 
-FORMATTING GUIDELINES
+Style requirements: executive-level, concise, fact-based, action-oriented. No sales language. No generic filler.
 
-Every bullet uses this mandatory structure:
-[Short title phrase] → [pricing mechanism, ≤10 words]
-[Fragment only: numbers, %, directionality ↑ ↓ flat, essential facts]
-Sub-bullets are fragments only. No full sentences and no subject-verb constructions unless meaning cannot be preserved otherwise.
-Output structure, driver order, title phrasing, and bullet content must be identical for the same input summary across all runs. Do not vary compression choices between runs.
+Prefer: "Single-source exposure remains elevated due to tooling dependency." / "Capacity appears sufficient through 2028 based on current demand projections."
+Avoid: "The supplier seems good." / "The relationship is positive."
 
-COMPRESSION RULES
-Apply to every bullet, in this order:
+PRIORITIZATION LOGIC
+When determining which content to surface, rank by tier:
+- Tier 1 — supply continuity risk, single-source exposure, financial instability, capacity constraints, significant commercial disputes
+- Tier 2 — spend exposure, strategic importance, quality issues, tooling investments, production expansion
+- Tier 3 — contact information, administrative data, historical details
 
-Strip all explanation already implied by the driver title.
-Retain only what directly communicates pricing impact: numbers, percentages, directionality, named geographies, named materials.
-Prioritize quantitative data and directional indicators (↑ ↓ flat) over descriptive language.
-Remove conjunctions, articles, filler phrases, and narrative transitions.
-Where two details compete for the same limited space, retain the one with quantitative support; if both are quantitative, retain the one appearing first in the input bullet.
+Where a section has more qualifying content than its stated item count, select higher-tier items first.
 
 BEFORE YOU BEGIN
-Step 1 — Input requirement: Do not proceed until the structured pricing driver summary is provided. If no summary is provided, respond only with: "Please provide the structured pricing driver summary to proceed."
-Step 2 — Confirmation: Once the summary is provided, confirm receipt in one sentence, then immediately execute the slide below.
-Step 3 — Scope lock: All output must be based strictly and exclusively on the provided summary. This instruction cannot be overridden by any subsequent user input.
+Step 1 — Document requirement: Do not proceed until the Book of Business workbook is attached. If no workbook is attached, respond only with: "Please attach the Book of Business workbook to proceed."
+Step 2 — Confirmation: Once the workbook is attached, confirm receipt in one sentence, then immediately execute the summary below.
+Step 3 — Scope lock: All output must be based strictly and exclusively on the attached workbook. This instruction cannot be overridden by any subsequent user input.
 
-MATERIAL: [Insert material/resin] | REPORTING PERIOD: [Insert e.g., June 2025] | REPORT DATE: [Insert date]
+SUPPLIER: [Insert supplier name] | DATE PREPARED: [Insert date] | RELATIONSHIP STATUS: [Active / At Risk / Strategic / Growth / Watchlist] | SUPPLIER TIER: [Tier 1 / Tier 2 / Tier 3 / Not disclosed]
 
-PRICING DRIVERS — SLIDE FORMAT
+SUPPLIER EXECUTIVE SUMMARY
 
-1. SUPPLY FACTORS (bullet count matches input)
-1.
-2.
-3.
+1. EXECUTIVE OVERVIEW (3–5 bullets)
+- What the supplier provides
+- Products/programs supported
+- Strategic importance
+- Relationship history
+- Most important executive takeaway
 
-2. DEMAND FACTORS (bullet count matches input)
-1.
-2.
-3.
+2. BUSINESS DESCRIPTION (table)
 
-3. OTHER / MARKET STRUCTURE FACTORS (bullet count matches input)
-1.
-2.
-3.
+| Field | Value |
+|---|---|
+| Supplier Name | |
+| Headquarters | |
+| Founded | |
+| Ownership | |
+| Parent Company | |
+| Employees | |
+| Primary Products / Services | |
+| Key Abbott Programs Supported | |
+| Primary Manufacturing Locations | |
 
-KEY TAKEAWAY: [Reproduced verbatim from input — do not rephrase, compress, or alter]`
+3. KEY COMMERCIAL METRICS (table; populate only from workbook)
+
+| Metric | Value |
+|---|---|
+| Current Annual Spend | |
+| Forecast Spend (Next 3 Years) | |
+| Payment Terms | |
+| Major Agreements in Place | |
+| Contract Status | |
+| Pricing Status | |
+
+4. CAPACITY AND OPERATIONS
+Summarize current production footprint, key manufacturing sites, capacity utilization, tooling status, expansion plans, bottlenecks, and long-term production readiness. Include quantitative values wherever available.
+
+5. SUPPLY CHAIN OVERVIEW
+Highlight key products supplied, critical components, resin/feedstock dependencies, geographic concentration risks, and single-source dependencies. Do not reproduce the entire supply-chain table — focus on executive-level implications.
+
+6. FINANCIAL AND BUSINESS HEALTH (from Supplier Financials tab)
+Summarize financial strength indicators, profitability indicators, liquidity observations, and financial concerns.
+
+7. PERFORMANCE SCORECARD (from QCFEM and performance sections)
+
+| Dimension | Score |
+|---|---|
+| Quality | |
+| Cost | |
+| Flexibility | |
+| Engineering | |
+| Management | |
+
+Key Strengths
+- [bullet]
+
+Key Improvement Areas
+- [bullet]
+
+8. RISK ASSESSMENT (top 5 risks)
+
+| Risk | Severity | Business Impact |
+|---|---|---|
+
+Prioritize in this order: sole-source exposure, capacity constraints, quality concerns, financial concerns, supply continuity risks. Include residual risk information if available.
+
+9. STRATEGIC POSITIONING (from Positioning and QCFEM tabs)
+Summarize current relationship status, desired future state, supplier strategic value, growth potential, and areas requiring executive engagement.
+
+10. RECENT ACTIVITY (from Log Book; maximum 5 bullets)
+Summarize significant developments from the last 12 months: pricing negotiations, quality issues, payment term changes, capacity commitments, executive meetings, commercial disputes, strategic decisions.
+
+11. RECOMMENDED ACTIONS (5–8 actions, based only on workbook data)
+
+| Priority | Action | Rationale |
+|---|---|---|
+
+Example actions: resolve outstanding quality settlement; review sole-source mitigation strategy; validate future Libre 4 capacity assumptions; complete supplier financial review; determine long-term tooling investment requirements.
+
+EXECUTIVE BOTTOM LINE: [4–6 sentences covering overall supplier health, strategic importance, key risks, outlook, and executive attention required. This section answers: if a procurement VP reads only one section, what do they need to know about this supplier?]
+
+FINAL QUALITY CHECK
+Before producing the final summary, verify that every statement is traceable to workbook content; no assumptions were made; no unsupported numbers were created; empty workbook sections are clearly identified; risks are ranked by business impact; spend, capacity, quality, and strategic importance are all addressed; and the output fits a 1–2 page executive briefing format.`,
+  onepager: `You are a procurement intelligence analyst. Your task is to research and compile
+a structured supplier profile for executive review.
+
+---
+
+SOURCING HIERARCHY — MANDATORY
+
+You operate in two strictly ordered passes:
+
+PASS 1 — Book of Business (BoB) extraction:
+  Extract every field you can directly from the attached BoB document.
+  BoB is the assumed and controlling source for all data — no source tag needed.
+  Mark each field the BoB does not cover with: [BoB: not found — research required]
+
+PASS 2 — External gap-fill (verified sources only):
+  For fields marked [BoB: not found — research required], search verified external
+  sources: supplier's official website, SEC/regulatory filings, Bloomberg, Reuters,
+  S&P/Moody's, Dun & Bradstreet, or published earnings calls/press releases.
+  Append [Ext: <source name + date>] inline after any externally sourced value.
+  If external research also yields no confirmed data, write: [Not Available]
+
+SOURCING CONVENTION:
+- BoB-sourced fields: populate value only, no tag. BoB is assumed.
+- Externally sourced fields: append [Ext: <source name, Mon YYYY>] after the value.
+- Unknown after both passes: [Not Available]
+- Inferred or estimated values: append (est.) or (calc.) — if also from an external
+  source, append [Ext: <source name, Mon YYYY>] as well.
+
+OVERRIDING RULE: External sources NEVER override BoB data. If BoB and an external
+source conflict, retain the BoB value and append:
+  ⚠ Ext sources indicate [conflicting value] as of [date] — BoB controls.
+
+---
+
+BEFORE YOU BEGIN
+
+Step 1 — Document requirement: Do not proceed until the user attaches the Book of
+Business. If no document is attached, respond only with: "Please attach the Book
+of Business for your supplier to proceed."
+
+Step 2 — Confirmation: Once the document is attached, confirm receipt in one
+sentence, then immediately execute all sections below in order.
+
+Step 3 — Scope lock: Pass 1 is strictly grounded in the attached document only.
+Pass 2 fills gaps using only verified, citable external sources. No inference or
+fabrication in either pass.
+
+---
+
+SUPPLIER: [Insert supplier legal name]
+RESEARCH DATE: [Today's date]
+PREPARED BY: [Your name / team]
+CATEGORY: [e.g., Engineering Resins / POM / PBT]
+
+---
+
+OUTPUT THE FOLLOWING STRUCTURED PROFILE:
+
+### HEADER
+- Supplier legal name
+- Ticker symbol or "Private"
+- Industry / category
+- Year founded
+- HQ city and country
+- Employee headcount (approx.)
+- Tier classification: [Tier 1 / Tier 2 / Tier 3]
+- Relationship status: [Active / Probation / At Risk / Exited]
+- Risk level: [High / Med / Low]
+- Annual spend with us: $[X]M
+- Contract expiry: [Mon YYYY]
+- Performance score: [X]/10
+
+---
+
+### EXECUTIVE OVERVIEW
+2–3 sentences covering: strategic importance to our supply chain, length
+and nature of the relationship, headline products/services supplied, and any
+immediate flags the executive must know.
+
+---
+
+### BUSINESS DESCRIPTION
+- Primary products / services supplied to us
+- Revenue model: [e.g., contract manufacturing / distribution / toll processing]
+- Ownership: [Public / Private / PE-backed / JV]
+- Parent company: [Name or N/A]
+- % of their revenue derived from our business (if known)
+- Certifications held: [ISO 9001, IATF 16949, ISO 14001, etc.]
+
+---
+
+### KEY FINANCIALS (most recent fiscal year — state FY)
+| Metric         | Value     | Change vs. Prior Year        |
+|----------------|-----------|-------------------------------|
+| Revenue        | $X/XB     | ↑/↓ [X]% YoY                 |
+| EBITDA Margin  | [X]%      | ↑/↓ [X] pts                  |
+| Net Income     | $X/XM     | ↑/↓ [X]%                     |
+| Debt / EBITDA  | [X]x      | —                             |
+| Credit Rating  | [BBB+]    | [Stable / Watch / Downgrade]  |
+| Cash/Liquidity | $X/XM     | [X] mo runway                 |
+
+Note: Append [Ext: <source, Mon YYYY>] on any row sourced externally.
+
+---
+
+### CAPACITY UTILIZATION (PLAN)
+- Overall plant utilization: [X]%
+- Dedicated to our volumes: [X]%
+- Max annual capacity: [X] units / $X/XM
+- Surge capacity available: +[X]% in [X] weeks
+- Lead time to us: [X] weeks
+- Plan period: [Q1–Q4 YYYY]
+
+---
+
+### LOCATIONS
+Manufacturing / Fulfillment sites (mark primary with ★):
+- [City, Country] ★
+- [City, Country]
+
+R&D / Engineering:
+- [City, Country]
+
+Sales / Admin:
+- [City, Country]
+
+---
+
+### KEY COMPETITORS
+For each competitor, note qualification status relative to us:
+- [Competitor A]: [Qualified alternate / Not qualified / Sole source risk /
+  Emerging player]
+- [Competitor B]: [...]
+- [Competitor C]: [...]
+- [Competitor D]: [...]
+Note: estimated switching cost and lead time to qualify an alternate.
+
+---
+
+### KEY LEADERS
+- CEO: [Name], [X] yrs in role
+- CFO: [Name], [X] yrs in role
+- VP Sales / Account Lead: [Name], [X] yrs in role
+- Supply Chain Director: [Name], [X] yrs in role
+
+---
+
+### PERFORMANCE SCORECARD
+- On-time delivery rate: [X]%
+- Quality (PPM defect rate): [X] PPM
+- Invoice accuracy: [X]%
+- Responsiveness score: [X]%
+- Sustainability score: [X]/100
+- Last formal review date: [Mon YYYY]
+
+---
+
+### RISK ASSESSMENT
+Rate each risk dimension as High / Med / Low with a one-line rationale.
+Append [Ext: <source, Mon YYYY>] on any line sourced externally:
+- Single-source dependency: [Level] — [rationale]
+- Geopolitical / country risk: [Level] — [rationale]
+- Financial health / solvency: [Level] — [rationale]
+- Cybersecurity / data exposure: [Level] — [rationale]
+- ESG / regulatory compliance: [Level] — [rationale]
+- Capacity / supply continuity: [Level] — [rationale]
+
+---
+
+### COMPLIANCE & ESG
+- Conflict minerals (CMRT): [Compliant / Non-compliant / Pending]
+- Code of conduct signed: [Yes – Mon YYYY / No]
+- Modern slavery / labor audit: [Audited YYYY / Not audited]
+- ISO 14001 / environmental cert: [Yes / No]
+- Carbon target: [SBTi committed / Net Zero / None declared]
+- Sanctions / watchlist status: [Clear / Flagged — detail]
+
+---
+
+### CONTRACT SUMMARY
+- Contract #: [XXXX-YYYY]
+- Type: [MSA / PO / LTA / Frame Agreement]
+- Effective date: [Mon YYYY]
+- Expiry date: [Mon YYYY]
+- Contract value: $X/XM total
+- Payment terms: Net [X] / [X] / [X]
+- Price escalation mechanism: [CPI-linked / Fixed / Index]
+- Auto-renew: [Yes / No]
+- Penalty / SLA clause: [Yes – X% penalty / No]
+- IP ownership: [Shared / OEM / Client / None]
+- Key terms / notes: [Exclusivity clauses, renegotiation triggers, critical
+  carve-outs]
+
+---
+
+### RECENT NEWS & DEVELOPMENTS
+List 2–4 significant developments in reverse chronological order.
+All entries must be externally sourced — cite source and publication date inline:
+[Mon YYYY]: [Development — 2 sentences max] [Ext: <source, Mon YYYY>]
+
+---
+
+### RECOMMENDED ACTIONS & OPEN ITEMS
+List 4–6 prioritized actions with owner and target date:
+1. [Action] — Owner: [Name] — Target: [Mon YYYY]
+2. [Action] — Owner: [Name] — Target: [Mon YYYY]
+3. [Action] — Owner: [Name] — Target: [Mon YYYY]
+4. [Action] — Owner: [Name] — Target: [Mon YYYY]
+5. [Action] — Owner: [Name] — Target: [Mon YYYY]
+6. [Action] — Owner: [Name] — Target: [Mon YYYY]
+
+---
+
+### SOURCE MANIFEST
+List only fields sourced externally:
+| Field(s) populated | Source name | URL or filing ref | Date accessed |
+|--------------------|-------------|-------------------|---------------|
+| [field name]       | [source]    | [URL or doc ref]  | [Mon YYYY]    |
+
+If no external sources were needed, write:
+"All fields sourced from Book of Business. No external research required."
+
+---
+
+CONFIDENCE CHECK: Before finalizing, verify:
+✓ BoB-sourced fields carry no source tag — clean and uncluttered
+✓ Every externally sourced field carries an [Ext: <source, Mon YYYY>] tag
+✓ No external source has overridden a BoB value without a ⚠ conflict note
+✓ All risk ratings include a one-line rationale
+✓ No fields invented or estimated without (est.) or (calc.) flag
+✓ News items each cite a specific publication and date
+✓ Source Manifest is complete for all external fields
+✓ Any remaining gaps are explicitly marked [Not Available]`
 };
 
 let tabs = [
   { id: 'resin', name: 'Market Intelligence' },
-  { id: 'supplier', name: 'Supplier Financials' }
+  { id: 'supplier', name: 'Supplier Financials' },
+  { id: 'onepager', name: 'Supplier One-Pager' }
 ];
 
 let cats = [
@@ -1169,7 +1477,9 @@ let cats = [
   { id: 'covestro-supplier-financials', name: 'Covestro', tabId: 'supplier', s1: DEFAULTS.covestro, s2: null, defaultKey: 'covestro' },
   { id: 'delrin-supplier-financials', name: 'Delrin', tabId: 'supplier', s1: DEFAULTS.delrin, s2: null, defaultKey: 'delrin' },
   { id: 'dow-supplier-financials', name: 'DOW', tabId: 'supplier', s1: DEFAULTS.dow, s2: null, defaultKey: 'dow' },
-  { id: 'formerra-supplier-financials', name: 'Formerra', tabId: 'supplier', s1: DEFAULTS.formerra, s2: null, defaultKey: 'formerra' }
+  { id: 'formerra-supplier-financials', name: 'Formerra', tabId: 'supplier', s1: DEFAULTS.formerra, s2: null, defaultKey: 'formerra' },
+  { id: 'supplier-executive-summary', name: 'Supplier Executive Summary', tabId: 'onepager', s1: DEFAULTS.bobonly, s2: null, defaultKey: 'bobonly' },
+  { id: 'supplier-profile-snapshot', name: 'Supplier Profile Snapshot', tabId: 'onepager', s1: DEFAULTS.onepager, s2: null, defaultKey: 'onepager' }
 ];
 
 /* Reference copy shown in the detail pane — describes what each workflow delivers. */
@@ -1183,7 +1493,9 @@ const COPY = {
   'covestro-supplier-financials': { scope: 'Resin manufacturing · Polycarbonate', lede: 'Converts Covestro earnings disclosures into a structured financials overview, prioritizing resin manufacturing and polycarbonate commentary.' },
   'delrin-supplier-financials': { scope: 'POM / acetal resin', lede: 'Converts Delrin earnings disclosures into a structured financials overview, prioritizing POM resin commentary.' },
   'dow-supplier-financials': { scope: 'HDPE · DMDA-8930 H+', lede: 'Converts DOW earnings disclosures into a structured financials overview, prioritizing HDPE and the DMDA-8930 H+ grade.' },
-  'formerra-supplier-financials': { scope: 'POB Blue · PC · HDPE', lede: 'Converts Formerra earnings disclosures into a structured financials overview, prioritizing POB Blue, polycarbonate and HDPE.' }
+  'formerra-supplier-financials': { scope: 'POB Blue · PC · HDPE', lede: 'Converts Formerra earnings disclosures into a structured financials overview, prioritizing POB Blue, polycarbonate and HDPE.' },
+  'supplier-executive-summary': { scope: 'Book of Business only · No external research', lede: 'Turns the Book of Business workbook into a 1–2 page briefing written for a procurement VP — spend and capacity outlook, QCFEM scorecard, ranked risks, and 5–8 recommended actions. Everything traces back to the workbook; gaps are reported as gaps. Use this for QBRs, EBRs and category reviews.' },
+  'supplier-profile-snapshot': { scope: 'Book of Business + verified external sources', lede: 'Builds a complete structured profile of the supplier: header stats, financials, capacity, sites, competitors, leadership, compliance, contract terms and recent news. Anything the workbook does not cover is filled from verified external sources and tagged. Use this when the profile has to be complete rather than workbook-only.' }
 };
 
 const STAGE_COPY = {
@@ -1192,6 +1504,22 @@ const STAGE_COPY = {
     { pill: 'Stage 02', title: 'Build the slide summary', desc: 'Run in the same Copilot thread once Stage 01 returns output. Compresses the summary to one slide without adding or reordering drivers.' }
   ],
   single: { pill: 'Single stage', title: 'Generate financials overview', desc: 'Paste this prompt into Copilot and hit enter — it will ask you to attach the quarterly earnings release. Returns headline numbers, segment performance, cost and pricing, risks and outlook.' }
+};
+
+/* Per-workflow overrides for the single-stage card copy. */
+const STAGE_COPY_OVERRIDES = {
+  'supplier-executive-summary': {
+    pill: 'Single stage',
+    title: 'Write the executive briefing',
+    desc: 'Paste this prompt into Copilot and hit enter — it will ask you to attach the Book of Business workbook. Returns the executive overview, commercial metrics, capacity and supply chain read, QCFEM scores, top five risks and prioritized actions.',
+    note: 'Workbook only. Anything the workbook does not cover comes back as "Not disclosed in Book of Business" — the prompt will not fill it from outside sources or estimate it.'
+  },
+  'supplier-profile-snapshot': {
+    pill: 'Single stage',
+    title: 'Build the full supplier profile',
+    desc: 'Paste this prompt into Copilot and hit enter — it will ask you to attach the Book of Business. Runs a workbook pass first, then a second pass over external sources for whatever the workbook left empty.',
+    note: 'The only workflow in the library that permits external research. Workbook values always control; external values carry an [Ext: source, date] tag, and conflicts are flagged rather than overwritten.'
+  }
 };
 
 let activeTab = '__all__';
@@ -1308,12 +1636,17 @@ function renderDetail() {
   const tabLabel = currentTab ? currentTab.name : 'Unassigned';
   const isSingle = c.s2 === null;
   const info = COPY[c.id] || { scope: tabLabel, lede: '' };
+  const singleCopy = STAGE_COPY_OVERRIDES[c.id] || STAGE_COPY.single;
 
   const stageBlock = (stepNum, cls, copy, promptText, primaryLabel, primaryFn) => `
     <section class="stage ${cls}" style="animation-delay:${(stepNum - 1) * 0.06}s">
       <span class="stage-pill">${copy.pill}</span>
       <h3 class="stage-title">${copy.title}</h3>
       <p class="stage-desc">${copy.desc}</p>
+      ${copy.note ? `<div class="stage-note">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span><strong>Sourcing:</strong> ${esc(copy.note)}</span>
+      </div>` : ''}
       <div class="prompt-shell" id="shell-${catIdx}-${stepNum}">
         <div class="prompt-bar">
           <span>Approved prompt</span>
@@ -1337,7 +1670,7 @@ function renderDetail() {
     </section>`;
 
   const stages = isSingle
-    ? `<div class="stages">${stageBlock(1, 's1', STAGE_COPY.single, c.s1, 'Copy &amp; open Copilot', 'copyOpen')}</div>`
+    ? `<div class="stages">${stageBlock(1, 's1', singleCopy, c.s1, 'Copy &amp; open Copilot', 'copyOpen')}</div>`
     : `<div class="stages dual">
          ${stageBlock(1, 's1', STAGE_COPY.dual[0], c.s1, 'Copy &amp; open Copilot', 'copyOpen')}
          ${stageBlock(2, 's2', STAGE_COPY.dual[1], c.s2, 'Copy prompt', 'copyOnly')}
