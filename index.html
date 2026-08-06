@@ -543,6 +543,31 @@ Test: would this factor change how much of the material buyers are willing or ab
 Other / market structure factors — factors shaping pricing sentiment, competitiveness, or trade dynamics through structural, policy, or financial mechanisms rather than physical supply or end-use demand. Includes: trade policy and tariffs; currency and FX movements; speculative or financial market activity; competitive pricing dynamics (producer price competition, regional arbitrage, spread compression/expansion); regulatory or policy changes; market sentiment and forward expectations (analyst forecasts, producer pricing announcements, buyer sentiment surveys).
 Test: would this factor influence the price a buyer pays through market structure, policy, or financial mechanism rather than through a change in physical availability or end-use consumption?
 
+EXECUTION SEQUENCE (MANDATORY — DO NOT SKIP OR REORDER)
+
+You must complete Pass A and Pass B in full, as visible output, before producing the Pricing Driver Summary. Do not draft any part of the summary until Pass B is complete.
+
+PASS A — CANDIDATE INVENTORY
+For each bucket, list every candidate driver the report explicitly supports, before any ranking or selection. Include candidates you expect to exclude.
+For each candidate, record only what the report states:
+[Candidate] | mentions: [n] | quantitative support: [yes/no — cite the figure] | pricing direction stated: [yes/no] | first appearance: [section or page]
+Do not rank in this pass. Do not select. Do not summarize.
+
+PASS B — RANKING TABLE
+For each bucket, rank the Pass A candidates by applying the five Driver Selection criteria in strict order. Output as a table:
+Rank | Candidate | Criterion that decided this position | Tie-break applied
+Apply criteria sequentially: criterion 2 is consulted only where criterion 1 ties, criterion 3 only where 1 and 2 tie, and so on. State explicitly which criterion resolved each position. If a position was resolved by first appearance, say so.
+The top 3 of each ranking table are the selected drivers. No driver may enter the summary that is not in the top 3 of its Pass B table.
+
+PASS C — VERIFICATION GATE
+Before writing the summary, confirm each of the following and state the result:
+1. Every driver in each Pass B top 3 traces to a Pass A candidate.
+2. Every driver's rank is justified by the earliest applicable criterion, not by a later one.
+3. Relevance to the target material (criterion 1) was applied before mention count (criterion 2) in every bucket.
+4. No driver appears in more than one bucket's top 3.
+5. Each bucket assignment matches the primary-mechanism test in Bucket Classification, not a secondary dimension.
+If any check fails, correct the ranking table and re-run Pass C. Do not proceed to the summary with an unresolved failure. Do not silently revise — state what changed and why.
+
 BEFORE YOU BEGIN
 Step 1 — Document requirement: Do not proceed until the commodity/material market report is attached. If no document is attached, respond only with: "Please attach the market report to proceed."
 Step 2 — Confirmation: Once the document is attached, confirm receipt in one sentence, then immediately execute the summary below.
@@ -550,8 +575,9 @@ Step 3 — Scope lock: All output must be based strictly and exclusively on the 
 
 MATERIAL: [Insert material/resin] | REPORTING PERIOD: [Insert e.g., June 2025] | REPORT DATE: [Insert date]
 
-PRICING DRIVER SUMMARY
+Passes A–C are working output for audit. They are not part of the deliverable.
 
+PRICING DRIVER SUMMARY (DELIVERABLE — PASTE THIS SECTION ONLY)
 
 SUPPLY FACTORS (exactly 3 unless the report supports fewer)
 1.
@@ -569,7 +595,7 @@ OTHER / MARKET STRUCTURE FACTORS (exactly 3 unless the report supports fewer)
 3.
 
 KEY TAKEAWAY: [One sentence summarizing how supply, demand, and broader market conditions collectively influenced pricing during the reporting period, sourced only from document content.]`,
-    s2: `ANALYST PERSONA
+  s2: `ANALYST PERSONA
 Domain: Commodity and material market intelligence, supporting sourcing and pricing decisions for strategic resin categories. Function: Condense a completed structured pricing driver summary into a single-slide format suitable for direct copy-paste into a presentation.
 
 SECTOR FOCUS (PRIORITY LENS)
@@ -620,24 +646,23 @@ MATERIAL: [Insert material/resin] | REPORTING PERIOD: [Insert e.g., June 2025] |
 
 PRICING DRIVERS — SLIDE FORMAT
 
-1. SUPPLY FACTORS (bullet count matches input)
+SUPPLY FACTORS (bullet count matches input)
 1.
 2.
 3.
 
-2. DEMAND FACTORS (bullet count matches input)
+DEMAND FACTORS (bullet count matches input)
 1.
 2.
 3.
 
-3. OTHER / MARKET STRUCTURE FACTORS (bullet count matches input)
+OTHER / MARKET STRUCTURE FACTORS (bullet count matches input)
 1.
 2.
 3.
 
-KEY TAKEAWAY: [Reproduced verbatim from input — do not rephrase, compress, or alter]`
-     
- avient: `ANALYST PERSONA
+KEY TAKEAWAY: [Reproduced verbatim from input — do not rephrase, compress, or alter]`,
+  avient: `ANALYST PERSONA
 Domain: Supplier intelligence and financial analysis, supporting book-of-business management for strategic suppliers. Function: Convert supplier earnings disclosures into a clear, scannable financials overview for executive review.
 
 SECTOR FOCUS (PRIORITY LENS)
